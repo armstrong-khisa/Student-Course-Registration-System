@@ -86,3 +86,55 @@ class SchoolSystem:
             
         except Exception as e:
             print(f"\n[Error] Failed to save data: {e}")
+
+    def load_from_json(self):
+        """Loads students, courses, and registrations from JSON files inside the data folder."""
+        # Import blueprints locally inside the method to prevent any circular import issues
+        from models.student import Student
+        from models.course import Course
+        from models.registration import Registration
+        
+        # 1. Load Students
+        try:
+            with open("data/students.json", "r") as f:
+                students_data = json.load(f)
+                self.students = []  # Clear current memory list before loading
+                for item in students_data:
+                    # Create a formal Student object using all 4 attributes
+                    student = Student(item["student_id"], item["name"], item["email"], item["phone"])
+                    self.students.append(student)
+            print("Loaded students successfully.")
+        except FileNotFoundError:
+            print("data/students.json not found. Starting with an empty student list.")
+        except Exception as e:
+            print(f"Error loading students: {e}")
+
+        # 2. Load Courses
+        try:
+            with open("data/courses.json", "r") as f:
+                courses_data = json.load(f)
+                self.courses = []  # Clear current memory list before loading
+                for item in courses_data:
+                    # Create a formal Course object using all 4 attributes
+                    course = Course(item["course_id"], item["course_name"], item["trainer"], item["max_capacity"])
+                    self.courses.append(course)
+            print("Loaded courses successfully.")
+        except FileNotFoundError:
+            print("data/courses.json not found. Starting with an empty course list.")
+        except Exception as e:
+            print(f"Error loading courses: {e}")
+
+        # 3. Load Registrations
+        try:
+            with open("data/registrations.json", "r") as f:
+                regs_data = json.load(f)
+                self.registrations = []  # Clear current memory list before loading
+                for item in regs_data:
+                    # Create a formal Registration object mapping student_id and course_id
+                    reg = Registration(item["student_id"], item["course_id"])
+                    self.registrations.append(reg)
+            print("Loaded registrations successfully.")
+        except FileNotFoundError:
+            print("data/registrations.json not found. Starting with empty registrations.")
+        except Exception as e:
+            print(f"Error loading registrations: {e}")

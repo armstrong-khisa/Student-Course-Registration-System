@@ -119,12 +119,12 @@ def main():
         elif choice == "9":
             print("\n--- [9. Save Data] ---")
             # Placeholder for future file saving feature
-            print("Save feature coming soon!")
+            system.save_to_json()
             
         elif choice == "10":
             print("\n--- [10. Load Data] ---")
             # Placeholder for future file loading feature
-            print("Load feature coming soon!")
+            system.load_from_json()
             
         elif choice == "0":
             print("\nThank you for using the Student Course Registration System. Goodbye!")
@@ -132,6 +132,5 @@ def main():
             
         else:
             print("\nInvalid choice! Please select a valid number from the menu (0-10).")
-
 if __name__ == "__main__":
     main()
