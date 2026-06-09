@@ -35,9 +35,6 @@ def main():
             
             # Pass all 4 collected variables to the backend
             system.add_student(student_id, name, email, phone)
-            
-            # Call the method from your school system backend
-            system.add_student(student_id, name)
         elif choice == "2":
             print("\n--- [2. View Students] ---")
             if not system.students:
