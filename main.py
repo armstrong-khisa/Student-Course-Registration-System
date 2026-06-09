@@ -30,6 +30,11 @@ def main():
             print("\n--- [1. Add Student] ---")
             student_id = input("Enter Student ID: ").strip()
             name = input("Enter Student Name: ").strip()
+            email = input("Enter Student Email: ").strip()
+            phone = input("Enter Student Phone: ").strip()
+            
+            # Pass all 4 collected variables to the backend
+            system.add_student(student_id, name, email, phone)
             
             # Call the method from your school system backend
             system.add_student(student_id, name)

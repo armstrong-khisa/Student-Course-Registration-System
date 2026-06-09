@@ -41,6 +41,15 @@ class SchoolSystem:
         print(f"Success: {student.name} has been registered for {course.course_name}!")
         return True
     
+    def add_student(self, student_id, name, email="", phone_number=""):
+        """Creates a new Student object and adds it to the master list."""
+        from models.student import Student
+        
+        # Create the instance with all required attributes
+        new_student = Student(student_id, name, email, phone_number)
+        self.students.append(new_student)
+        print(f"\n[Success] Student '{name}' added successfully!")  
+    
     def save_to_json(self):
         """Saves complete students, courses, and registrations into JSON files inside the data folder."""
         # 1. Convert Student objects (including Email and Phone) into dictionaries
@@ -50,7 +59,7 @@ class SchoolSystem:
                 "student_id": student.student_id,
                 "name": student.name,
                 "email": student.email,
-                "phone": student.phone
+                "phone_number": student.phone_number
             })
             
         # 2. Convert Course objects (including Trainer) into dictionaries
@@ -101,7 +110,7 @@ class SchoolSystem:
                 self.students = []  # Clear current memory list before loading
                 for item in students_data:
                     # Create a formal Student object using all 4 attributes
-                    student = Student(item["student_id"], item["name"], item["email"], item["phone"])
+                    student = Student(item["student_id"], item["name"], item["email"], item["phone_number"])
                     self.students.append(student)
             print("Loaded students successfully.")
         except FileNotFoundError:
