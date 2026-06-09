@@ -18,7 +18,14 @@ class SchoolSystem:
         for course in self.courses:
             if course.course_id == course_id:
                 return course
-            return None
+        return None
+
+    def count_students_in_course(self, course_id):
+        count = 0
+        for reg in self.registrations:
+            if reg.course_id == course_id:
+                count += 1
+        return count
 
     def register_student(self , student_id, course_id):
         student = self.find_student_by_id(student_id)
@@ -35,6 +42,11 @@ class SchoolSystem:
             if reg.student_id == student_id and reg.course_id == course_id:
                 print(f"Registration failed: {student.name} is already registered for {course.course_name}.")
                 return False
+
+        current_count = self.count_students_in_course(course_id)
+        if current_count >= course.capacity:
+            print(f"Registration failed: {course.course_name} is full (capacity {course.capacity}).")
+            return False
 
         new_reg = Registration(student_id, course_id)
         self.registrations.append(new_reg)
