@@ -59,13 +59,25 @@ def main():
             print("\n--- [4. Add Course] ---")
             course_id = input("Enter Course ID: ").strip()
             course_name = input("Enter Course Name: ").strip()
-            max_capacity = input("Enter Maximum Capacity: ").strip()
+            trainer_name = input("Enter Trainer Name: ").strip() # Collect trainer name
+            capacity = input("Enter Maximum Capacity: ").strip()
             
-            # Simple conversion safeguard for capacity
-            if max_capacity.isdigit():
-                system.add_course(course_id, course_name, int(max_capacity))
+            if capacity.isdigit():
+                # Pass all 4 arguments exactly as your model expects them
+                system.add_course(course_id, course_name, trainer_name, int(capacity))
             else:
                 print("Error: Capacity must be a whole number. Course not added.")
+                
+        elif choice == "5":
+            print("\n--- [5. View Courses] ---")
+            if not system.courses:
+                print("No courses offered in the system yet.")
+            else:
+                print("\nAvailable Courses:")
+                for course in system.courses:
+                    # Leverage your beautifully structured display_info() method!
+                    print(course.display_info())
+                    print("-" * 30)
                 
         elif choice == "5":
             print("\n--- [5. View Courses] ---")
