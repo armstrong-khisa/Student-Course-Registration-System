@@ -42,7 +42,9 @@ def main():
             else:
                 print("\nEnrolled Students:")
                 for student in system.students:
-                    print(f"ID: {student.student_id} | Name: {student.name}")
+                    
+                    print(student.display_info())
+                    print("-" * 30)  # Clean visual break between students
                     
         elif choice == "3":
             print("\n--- [3. Search Student] ---")
@@ -72,7 +74,8 @@ def main():
             else:
                 print("\nAvailable Courses:")
                 for course in system.courses:
-                    print(f"ID: {course.course_id} | Name: {course.course_name} | Capacity: {course.max_capacity}")
+                    print(course.display_info())
+                    print("-" * 30)  # Clean visual break between courses
                     
         elif choice == "6":
             print("\n--- [6. Register Student to Course] ---")
