@@ -24,6 +24,8 @@ def get_validated_input(prompt, validation_fn, error_requirements):
 
 def main():
     system = SchoolSystem()
+
+    system.load_from_json()  # Load existing data if available
     
     while True:
         display_menu()
