@@ -115,8 +115,45 @@ def main():
                     
         elif choice == "6":
             print("\n--- [6. Register Student to Course] ---")
-            student_id = input("Enter Student ID: ").strip()
-            course_id = input("Enter Course ID: ").strip()
+            print("(Note: Type 'q' at any prompt to cancel and return to main menu)")
+            
+            # 1. Loop until a valid, EXISTING student ID is entered
+            while True:
+                student_id = get_validated_input(
+                    "Enter Student ID: ",
+                    Student.validate_student_id,
+                    "Alphanumeric with underscores or dashes (3-20 characters)."
+                )
+                if student_id is None:
+                    break  # User cancelled via 'q'
+                
+                # Check backend existence right here
+                if not system.find_student_by_id(student_id):
+                    print(f"❌ Error: Student with ID '{student_id}' does not exist in the system. Please try again.")
+                    continue
+                break
+                
+            if student_id is None: continue # Break to main menu if cancelled
+
+            # 2. Loop until a valid, EXISTING course ID is entered
+            while True:
+                course_id = get_validated_input(
+                    "Enter Course ID: ",
+                    Course.validate_course_id,
+                    "Alphanumeric with underscores or dashes (3-20 characters)."
+                )
+                if course_id is None:
+                    break  # User cancelled via 'q'
+                
+                # Check backend existence right here
+                if not system.find_course_by_id(course_id):
+                    print(f"❌ Error: Course with ID '{course_id}' does not exist in the system. Please try again.")
+                    continue
+                break
+                
+            if course_id is None: continue # Break to main menu if cancelled
+            
+            # 3. Both exist! Now pass to the system to check for double-registrations or full capacity
             system.register_student(student_id, course_id)
             
         elif choice == "7":
