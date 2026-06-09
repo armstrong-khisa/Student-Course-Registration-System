@@ -1,0 +1,20 @@
+[
+    {
+        "student_id": "S001",
+        "name": "Armstrong Khisa",
+        "email": "khisa@gmail.com",
+        "phone_number": "0712345678"
+    },
+    {
+        "student_id": "S002",
+        "name": "Jane Doe",
+        "email": "jane.doe@example.com",
+        "phone_number": "0722111222"
+    },
+    {
+        "student_id": "S003",
+        "name": "John Smith",
+        "email": "john.smith@example.com",
+        "phone_number": "0733444555"
+    }
+]
