@@ -2,185 +2,214 @@ from services.school_system import SchoolSystem
 from models.student import Student
 from models.course import Course
 
-# --- REUSABLE INPUT VALIDATION CONTROLLER ---
+
+# Reusable helper for validating user input throughout the application
 def get_validated_input(prompt, validation_fn, error_requirements):
     """
-    Prompts the user quietly. 
+    Prompts the user quietly.
     Only prints the formatting requirements if the user enters invalid data.
     """
     while True:
         user_input = input(prompt).strip()
-        
+
         if user_input.lower() == 'q':
             print("\n[Operation Cancelled] Returning to main menu...")
             return None
-            
+
         if validation_fn(user_input):
             return user_input
         else:
-            # Only display instructions on a failed validation attempt!
-            print(f"\n❌ Invalid Input. Requirements: {error_requirements}")
+            print(f"\n Invalid Input. Requirements: {error_requirements}")
             print("Please try again or type 'q' to cancel.\n")
+
 
 def main():
     system = SchoolSystem()
 
-    system.load_from_json()  # Load existing data if available
-    
+    # Load previously saved data when the system starts
+    system.load_from_json()
+
     while True:
         display_menu()
         choice = input("Choose an option: ").strip()
 
+        # Student Management
         if choice == "1":
             print("\n--- [1. Add Student] ---")
             print("(Note: Type 'q' at any prompt to cancel and return to main menu)")
-            
+
             student_id = get_validated_input(
-                "Enter Student ID: ", 
-                Student.validate_student_id, 
+                "Enter Student ID:",
+                Student.validate_student_id,
                 "Alphanumeric with underscores or dashes (3-20 characters)."
             )
-            if student_id is None: continue
-            
+            if student_id is None:
+                continue
+
             name = get_validated_input(
-                "Enter Student Name: ", 
-                Student.validate_name, 
+                "Enter Student Name:",
+                Student.validate_name,
                 "Letters and spaces only (2-50 characters)."
             )
-            if name is None: continue
-            
+            if name is None:
+                continue
+
             email = get_validated_input(
-                "Enter Student Email: ", 
-                Student.validate_email, 
+                "Enter Student Email:",
+                Student.validate_email,
                 "Valid email format (e.g., user@domain.com)."
             )
-            if email is None: continue
-            
+            if email is None:
+                continue
+
             phone = get_validated_input(
-                "Enter Student Phone: ", 
-                Student.validate_phone, 
+                "Enter Student Phone:",
+                Student.validate_phone,
                 "Digits, spaces, dashes, parentheses (7-15 characters)."
             )
-            if phone is None: continue
-            
+            if phone is None:
+                continue
+
             system.add_student(student_id, name, email, phone)
-            
+
         elif choice == "2":
             print("\n--- [2. View Students] ---")
             system.display_all_students()
-                    
+
         elif choice == "3":
             print("\n--- [3. Search Student] ---")
             student_id = input("Enter Student ID to search: ").strip()
             system.search_student_by_id(student_id)
-                
+
+        # Course Management
         elif choice == "4":
             print("\n--- [4. Add Course] ---")
             print("(Note: Type 'q' at any prompt to cancel and return to main menu)")
-            
+
             course_id = get_validated_input(
-                "Enter Course ID: ", 
-                Course.validate_course_id, 
+                "Enter Course ID:",
+                Course.validate_course_id,
                 "Alphanumeric with underscores or dashes (3-20 characters)."
             )
-            if course_id is None: continue
-            
+            if course_id is None:
+                continue
+
             course_name = get_validated_input(
-                "Enter Course Name: ", 
-                Course.validate_course_name, 
+                "Enter Course Name:",
+                Course.validate_course_name,
                 "Alphanumeric and spaces (3-100 characters)."
             )
-            if course_name is None: continue
-            
+            if course_name is None:
+                continue
+
             trainer_name = get_validated_input(
-                "Enter Trainer Name: ", 
-                Course.validate_trainer_name, 
+                "Enter Trainer Name:",
+                Course.validate_trainer_name,
                 "Letters and spaces only (2-50 characters)."
             )
-            if trainer_name is None: continue
-            
+            if trainer_name is None:
+                continue
+
             capacity = get_validated_input(
-                "Enter Maximum Capacity: ", 
-                Course.validate_capacity, 
+                "Enter Maximum Capacity:",
+                Course.validate_capacity,
                 "Positive whole number greater than 0."
             )
-            if capacity is None: continue
-            
-            # Safe to pass to system and cast capacity safely to an int
-            system.add_course(course_id, course_name, trainer_name, int(capacity))
-                
+            if capacity is None:
+                continue
+
+            system.add_course(
+                course_id,
+                course_name,
+                trainer_name,
+                int(capacity)
+            )
+
         elif choice == "5":
             print("\n--- [5. View Courses] ---")
             system.display_all_courses()
-                    
+
+        # Registration Management
         elif choice == "6":
             print("\n--- [6. Register Student to Course] ---")
             print("(Note: Type 'q' at any prompt to cancel and return to main menu)")
-            
-            # 1. Loop until a valid, EXISTING student ID is entered
+
+            # Ensure the student exists before registration
             while True:
                 student_id = get_validated_input(
                     "Enter Student ID: ",
                     Student.validate_student_id,
                     "Alphanumeric with underscores or dashes (3-20 characters)."
                 )
-                if student_id is None:
-                    break  # User cancelled via 'q'
-                
-                # Check backend existence right here
-                if not system.find_student_by_id(student_id):
-                    print(f"❌ Error: Student with ID '{student_id}' does not exist in the system. Please try again.")
-                    continue
-                break
-                
-            if student_id is None: continue # Break to main menu if cancelled
 
-            # 2. Loop until a valid, EXISTING course ID is entered
+                if student_id is None:
+                    break
+
+                if not system.find_student_by_id(student_id):
+                    print(
+                        f"❌ Error: Student with ID '{student_id}' "
+                        f"does not exist in the system. Please try again."
+                    )
+                    continue
+
+                break
+
+            if student_id is None:
+                continue
+
+            # Ensure the course exists before registration
             while True:
                 course_id = get_validated_input(
                     "Enter Course ID: ",
                     Course.validate_course_id,
                     "Alphanumeric with underscores or dashes (3-20 characters)."
                 )
+
                 if course_id is None:
-                    break  # User cancelled via 'q'
-                
-                # Check backend existence right here
+                    break
+
                 if not system.find_course_by_id(course_id):
-                    print(f"❌ Error: Course with ID '{course_id}' does not exist in the system. Please try again.")
+                    print(
+                        f"❌ Error: Course with ID '{course_id}' "
+                        f"does not exist in the system. Please try again."
+                    )
                     continue
+
                 break
-                
-            if course_id is None: continue # Break to main menu if cancelled
-            
-            # 3. Both exist! Now pass to the system to check for double-registrations or full capacity
+
+            if course_id is None:
+                continue
+
             system.register_student(student_id, course_id)
-            
+
         elif choice == "7":
             print("\n--- [7. View Students in a Course] ---")
             course_id = input("Enter Course ID: ").strip()
             system.display_students_in_course(course_id)
-                    
+
         elif choice == "8":
             print("\n--- [8. View Courses for a Student] ---")
             student_id = input("Enter Student ID: ").strip()
             system.display_courses_for_student(student_id)
-                    
+
+        # Data Persistence
         elif choice == "9":
             print("\n--- [9. Save Data] ---")
             system.save_to_json()
-            
+
         elif choice == "10":
             print("\n--- [10. Load Data] ---")
             system.load_from_json()
-            
+
         elif choice == "0":
             print("\nThank you for using the Student Course Registration System. Goodbye!")
             break
-            
+
         else:
             print("\nInvalid choice! Please select a valid number from the menu (0-10).")
 
+
+# Display the main navigation menu
 def display_menu():
     print("\n===== Student Course Registration System =====")
     print("1. Add Student")
@@ -195,6 +224,7 @@ def display_menu():
     print("10. Load Data")
     print("0. Exit")
     print("=============================================")
+
 
 if __name__ == "__main__":
     main()
